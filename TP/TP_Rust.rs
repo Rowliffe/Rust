@@ -1,11 +1,7 @@
-// faire une bibiliothèquesde livre en Rust avec les contraintes suivantes :
-// chaque livre a un titre, un auteur, une année de publication, disponible ou pas et son genre
-// la bibliothèque doit permettre d'ajouter, de supprimer et de voir des livres si il sont disponible
-
-
-// Personne composant le groupe Mathéo BELLONNET, Naël MEIGNAT, ENZO CLAMY--COURTIAL
+// Personne composant le groupe Mathéo BELLONNET, Naël MEIGNANT, ENZO CLAMY--COURTIAL
 use std::io;
 
+// correspond à l'interface de la bibliothèque
 trait Library {
     fn add_book(
         &mut self,
@@ -18,6 +14,7 @@ trait Library {
     fn view_all_books(&self);
 }
 
+// correspond à l'interface d'un livre
 trait OneBook {
     fn return_book(&mut self);
     fn remove_book(&mut self);
@@ -37,6 +34,7 @@ struct Book {
 }
 
 impl Library for Bookshelf {
+    //ajoute un livre à la bibliothèque
     fn add_book(
         &mut self,
         title: String,
@@ -44,6 +42,7 @@ impl Library for Bookshelf {
         publication_date: u32,
         genre: Vec<String>
     ) {
+        // vérifie si le livre existe déjà par son titre
         if self.books.iter().any(|b| b.title == title) {
             println!("Erreur : Le livre '{}' existe déjà ", title);
         } else {
@@ -58,7 +57,7 @@ impl Library for Bookshelf {
             println!("Livre ajouté avec succès !");
         }
     }
-
+    // affiche tous les livres disponibles
     fn view_all_books_available(&self) {
         for book in &self.books {
             if book.availability {
@@ -72,6 +71,7 @@ impl Library for Bookshelf {
             }
         }
     }
+    // affiche tous les livres
     fn view_all_books(&self) {
         for book in &self.books {
             println!(
@@ -91,6 +91,7 @@ impl Library for Bookshelf {
 }
 
 impl OneBook for Book {
+    // retire un livre de la bibliothèque
     fn remove_book(&mut self) {
         if self.availability {
             self.availability = false;
@@ -99,7 +100,7 @@ impl OneBook for Book {
             println!("Le livre n'est déjà pas disponible")
         }
     }
-
+    // retourne un livre à la bibliothèque
     fn return_book(&mut self) {
         if self.availability == true {
             println!("Le livre est déjà disponible");
@@ -123,17 +124,19 @@ fn main() {
         println!("6. Quitter");
         println!("\nVotre choix :");
 
-        let mut input_choice = String::new();
-        io::stdin().read_line(&mut input_choice).unwrap();
-        let input_choice_error = input_choice.trim().to_string();
-        let result = input_choice_error.parse::<u32>();
 
+        let mut input_choice = String::new();
+        io::stdin().read_line(&mut input_choice).unwrap(); //on lit l'entrée utilisateur
+        let input_choice_error = input_choice.trim().to_string(); //on retire les espaces inutiles
+        let result = input_choice_error.parse::<u32>();  //on convertit le resultat en u32
+
+        // on récupère les erreurs 
         if result.is_err() {
             println!("Choix non valide (1 à 6 seulement)\n");
             continue;
         }
 
-        let choice: u32 = result.unwrap();
+        let choice: u32 = result.unwrap(); // on récupère le choix
 
         match choice {
             1 => {
@@ -145,13 +148,13 @@ fn main() {
                 println!("=> Auteur : ");
                 let mut author = String::new();
                 io::stdin().read_line(&mut author).unwrap();
-                let author = author.trim().to_string();
+                let author = author.trim().to_string(); 
 
                 println!("=> Date de publication : ");
                 let mut publication_date = String::new();
                 io::stdin().read_line(&mut publication_date).unwrap();
                 let input_publication_date_error = publication_date.trim().to_string();
-                let result = input_publication_date_error.parse::<u32>();
+                let result = input_publication_date_error.parse::<u32>(); //on convertit le resultat en u32
 
                 if result.is_err() {
                     println!("Il faut un nombre");
@@ -175,6 +178,7 @@ fn main() {
 
                 let mut found = false;
 
+                // cherche le livre par son titre
                 for book in &mut shelf.books {
                     if book.title == remove {
                         book.remove_book();
@@ -195,7 +199,8 @@ fn main() {
                 let book_return = book_return.trim();
 
                 let mut found = false;
-
+                
+                // cherche le livre par son titre
                 for book in &mut shelf.books {
                     if book.title == book_return {
                         book.return_book();
