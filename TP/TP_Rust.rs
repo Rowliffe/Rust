@@ -7,7 +7,7 @@ trait Library {
         &mut self,
         title: String,
         author: String,
-        publication_date: u32,
+        publication_year: u32,
         genre: Vec<String>
     );
     fn view_all_books_available(&self);
@@ -28,7 +28,7 @@ struct Bookshelf {
 struct Book {
     title: String,
     author: String,
-    publication_date: u32,
+    publication_year: u32,
     genre: Vec<String>,
     availability: bool,
 }
@@ -39,7 +39,7 @@ impl Library for Bookshelf {
         &mut self,
         title: String,
         author: String,
-        publication_date: u32,
+        publication_year: u32,
         genre: Vec<String>
     ) {
         // vérifie si le livre existe déjà par son titre
@@ -49,7 +49,7 @@ impl Library for Bookshelf {
             let book = Book {
                 title,
                 author,
-                publication_date,
+                publication_year,
                 genre,
                 availability: true,
             };
@@ -62,10 +62,10 @@ impl Library for Bookshelf {
         for book in &self.books {
             if book.availability {
                 println!(
-                    "titre : {} | auteur.ice : {} | date de publication : {} | genre : {:?}",
+                    "titre : {} | auteur.ice : {} | année de publication : {} | genre : {:?}",
                     book.title,
                     book.author,
-                    book.publication_date,
+                    book.publication_year,
                     book.genre
                 );
             }
@@ -75,10 +75,10 @@ impl Library for Bookshelf {
     fn view_all_books(&self) {
         for book in &self.books {
             println!(
-                "titre : {} | auteur.ice : {} | date de publication : {} | genre : {:?} | disponibilité : {}",
+                "titre : {} | auteur.ice : {} | année de publication : {} | genre : {:?} | disponibilité : {}",
                 book.title,
                 book.author,
-                book.publication_date,
+                book.publication_year,
                 book.genre,
                 if book.availability {
                     "Disponible"
@@ -150,25 +150,25 @@ fn main() {
                 io::stdin().read_line(&mut author).unwrap();
                 let author = author.trim().to_string(); 
 
-                println!("=> Date de publication : ");
-                let mut publication_date = String::new();
-                io::stdin().read_line(&mut publication_date).unwrap();
-                let input_publication_date_error = publication_date.trim().to_string();
-                let result = input_publication_date_error.parse::<u32>(); //on convertit le resultat en u32
+                println!("=> Année de publication : ");
+                let mut publication_year = String::new();
+                io::stdin().read_line(&mut publication_year).unwrap();
+                let input_publication_year_error = publication_year.trim().to_string();
+                let result = input_publication_year_error.parse::<u32>(); //on convertit le resultat en u32
 
                 if result.is_err() {
                     println!("Il faut un nombre");
                     continue;
                 }
 
-                let publication_date: u32 = result.unwrap();
+                let publication_year: u32 = result.unwrap();
 
                 println!("=> Genre : ");
                 let mut genre = String::new();
                 io::stdin().read_line(&mut genre).unwrap();
                 let genre = genre.trim().to_string();
 
-                shelf.add_book(title, author, publication_date, vec![genre]);
+                shelf.add_book(title, author, publication_year, vec![genre]);
             }
             2 => {
                 println!("=> Entrez le titre du livre à prendre :");
@@ -199,7 +199,7 @@ fn main() {
                 let book_return = book_return.trim();
 
                 let mut found = false;
-                
+
                 // cherche le livre par son titre
                 for book in &mut shelf.books {
                     if book.title == book_return {
