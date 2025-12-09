@@ -1,7 +1,9 @@
 // faire une bibiliothèquesde livre en Rust avec les contraintes suivantes :
 // chaque livre a un titre, un auteur, une année de publication, disponible ou pas et son genre
 // la bibliothèque doit permettre d'ajouter, de supprimer et de voir des livres si il sont disponible
-//
+
+
+// Personne composant le groupe Mathéo BELLONNET, Naël MEIGNAT, ENZO CLAMY--COURTIAL
 use std::io;
 
 trait Library {
@@ -42,7 +44,7 @@ impl Library for Bookshelf {
         publication_date: u32,
         genre: Vec<String>
     ) {
-        if self.books.iter().any(|b| b.title == title ) {
+        if self.books.iter().any(|b| b.title == title) {
             println!("Erreur : Le livre '{}' existe déjà ", title);
         } else {
             let book = Book {
@@ -78,7 +80,11 @@ impl Library for Bookshelf {
                 book.author,
                 book.publication_date,
                 book.genre,
-                if book.availability { "Disponible" } else { "Indisponible" }
+                if book.availability {
+                    "Disponible"
+                } else {
+                    "Indisponible"
+                }
             );
         }
     }
@@ -95,11 +101,11 @@ impl OneBook for Book {
     }
 
     fn return_book(&mut self) {
-        if !self.availability {
+        if self.availability == true {
+            println!("Le livre est déjà disponible");
+        } else {
             self.availability = true;
             println!("Vous avez retourné le livre '{}'\n", self.title);
-        } else {
-            println!("Le livre est déjà disponible")
         }
     }
 }
@@ -119,8 +125,16 @@ fn main() {
 
         let mut input_choice = String::new();
         io::stdin().read_line(&mut input_choice).unwrap();
-        let choice: u32 = input_choice.trim().parse().unwrap();
-       
+        let input_choice_error = input_choice.trim().to_string();
+        let result = input_choice_error.parse::<u32>();
+
+        if result.is_err() {
+            println!("Choix non valide (1 à 6 seulement)\n");
+            continue;
+        }
+
+        let choice: u32 = result.unwrap();
+
         match choice {
             1 => {
                 println!("=> Titre : ");
@@ -136,7 +150,15 @@ fn main() {
                 println!("=> Date de publication : ");
                 let mut publication_date = String::new();
                 io::stdin().read_line(&mut publication_date).unwrap();
-                let publication_date: u32 = publication_date.trim().parse().unwrap();
+                let input_publication_date_error = publication_date.trim().to_string();
+                let result = input_publication_date_error.parse::<u32>();
+
+                if result.is_err() {
+                    println!("Il faut un nombre");
+                    continue;
+                }
+
+                let publication_date: u32 = result.unwrap();
 
                 println!("=> Genre : ");
                 let mut genre = String::new();
@@ -195,7 +217,6 @@ fn main() {
             5 => {
                 println!("Liste des livres qui sont disponibles dans la bibliothèque:");
                 shelf.view_all_books_available();
-                
             }
 
             6 => {
